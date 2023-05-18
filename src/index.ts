@@ -21,9 +21,9 @@ application.use('/', router);
 connectToDatabase()
 console.log(" data base --->>", connectToDatabase())
 console.log("usercreated db ======>>> " ,getAllUsers())
-// getAllUsers()
+getAllUsers()
 // deletuser()
-createorder()
+// createorder()
 application.listen(PORT, () => {
   console.log(`server running on ${PORT}`);
 });
