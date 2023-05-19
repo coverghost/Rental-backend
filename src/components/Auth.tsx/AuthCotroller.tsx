@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { RegisterUser, User, registerUserViaMobile } from "../modals/User";
+import { User } from "../modals/User";
 import { Order } from "../modals/Order";
 import jwt from "jsonwebtoken";
 
@@ -50,11 +50,17 @@ export const createorder = async () => {
   });
 };
 
+
+
 export const Login = async (request: Request, response: Response) => {
   const value = request.body;
-  console.log("data from frontend +++>>>", value.mobile,value.password);
+  console.log("data from frontend +++>>>", value.mobile, value.password);
 
-  if (value.mobile === "7703990600" && value.password === "arya@123") {
+  const isuser = await User.find({"personal.mobile":value.mobile})
+  const paswword = isuser[0].personal?.password
+  console.log("isuer----------->>",isuser,paswword)
+
+  if (paswword===value.password) {
     const token = jwt.sign({ mobile: value.mobile }, "your-secret-key");
 
     // Include the token in the response
@@ -64,4 +70,38 @@ export const Login = async (request: Request, response: Response) => {
   return response
     .status(401)
     .json({ success: false, message: "Invalid credentials" });
+};
+
+
+
+
+
+export const Register = async (request: Request, response: Response) => {
+  const value = request.body;
+  console.log("signup value----->>>",value)
+  const userId = `USER${Math.floor(Math.random() * 1000000000)}`;
+  await User.create({
+    userId: userId,
+    personal: { name: value.Name , mobile: value.S_mobile, password: value.S_password, dob: " " },
+    address: {
+      line1: " ",
+      line2: " ",
+      pincode: " ",
+      state: " ",
+      city: " ",
+    },
+    kyc: {
+      panNumber: " ",
+      aadhaarNumber: " ",
+    },
+    bankDetails: {
+      bankName: " ",
+      accountName: " ",
+      ifsc: " ",
+      accountNumber: " ",
+    },
+  });
+  return response
+    .status(200)
+    .json({ success: true, message: "User Created Succefully" });
 };
