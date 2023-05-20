@@ -62,7 +62,7 @@ export const Login = async (request: Request, response: Response) => {
       const token = jwt.sign({ mobile: value.mobile }, "your-secret-key");
 
       // Include the token in the response
-      return response.json({ success: true, token: token });
+      return response.json({ success: true, token: token});
     }
 
     return response
