@@ -50,39 +50,47 @@ export const createorder = async () => {
   });
 };
 
-
-
 export const Login = async (request: Request, response: Response) => {
   const value = request.body;
   console.log("data from frontend +++>>>", value.mobile, value.password);
 
-  const isuser = await User.find({"personal.mobile":value.mobile})
-  const paswword = isuser[0].personal?.password
-  console.log("isuer----------->>",isuser,paswword)
+  const isuser = await User.find({ "personal.mobile": value.mobile });
+  if (isuser.length > 0) {
+    const paswword = isuser[0].personal?.password;
 
-  if (paswword===value.password) {
-    const token = jwt.sign({ mobile: value.mobile }, "your-secret-key");
+    if (paswword === value.password) {
+      const token = jwt.sign({ mobile: value.mobile }, "your-secret-key");
 
-    // Include the token in the response
-    return response.json({ success: true, token: token });
+      // Include the token in the response
+      return response.json({ success: true, token: token });
+    }
+
+    return response
+      .status(401)
+      .json({ success: false, message: "Invalid Password" });
+  } else {
+    return response
+      .status(401)
+      .json({
+        
+        message:"User Not found please register.",
+        isError: true,
+      });
   }
-
-  return response
-    .status(401)
-    .json({ success: false, message: "Invalid credentials" });
 };
-
-
-
-
 
 export const Register = async (request: Request, response: Response) => {
   const value = request.body;
-  console.log("signup value----->>>",value)
+  console.log("signup value----->>>", value);
   const userId = `USER${Math.floor(Math.random() * 1000000000)}`;
   await User.create({
     userId: userId,
-    personal: { name: value.Name , mobile: value.S_mobile, password: value.S_password, dob: " " },
+    personal: {
+      name: value.Name,
+      mobile: value.S_mobile,
+      password: value.S_password,
+      dob: " ",
+    },
     address: {
       line1: " ",
       line2: " ",
