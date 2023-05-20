@@ -69,19 +69,22 @@ export const Login = async (request: Request, response: Response) => {
       .status(401)
       .json({ success: false, message: "Invalid Password" });
   } else {
-    return response
-      .status(401)
-      .json({
-        
-        message:"User Not found please register.",
-        isError: true,
-      });
+    return response.status(401).json({
+      success: false,
+      message: "User Not found please register.",
+    });
   }
 };
 
 export const Register = async (request: Request, response: Response) => {
   const value = request.body;
-  console.log("signup value----->>>", value);
+  const isuser = await User.find({ "personal.mobile": value.S_mobile});
+  console.log("signup value-- +++++++++++++++++++++++++++++++++++   --->>>", isuser.length);
+  if (isuser.length > 0) {
+    return response
+      .status(401)
+      .json({ success: false, message: "Mobile Number Already exist" });
+  }
   const userId = `USER${Math.floor(Math.random() * 1000000000)}`;
   await User.create({
     userId: userId,
