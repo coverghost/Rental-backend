@@ -18,9 +18,6 @@ application.use(helmet.xssFilter());
 application.use('/', router);
 
 connectToDatabase()
-console.log(" data base --->>", connectToDatabase())
-console.log("usercreated db ======>>> " ,getAllUsers())
-getAllUsers()
 // deletuser()
 // createorder()
 application.listen(PORT, () => {

@@ -9,5 +9,6 @@ router.post('/user-register',Register)
 
 
 router.post('/dashboard',Dashboarddata.GetUserInfo)
+router.get("/get-all-user",Dashboarddata.GetAllUser)
 
 export default router;
