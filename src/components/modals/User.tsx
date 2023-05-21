@@ -35,7 +35,7 @@ interface IUser {
 const userSchema = new Schema<IUser>({
   userId: { type: String, required: true },
   personal: {
-    name: { type: String, default: "user" },
+    name: { type: String, default:"" },
     password: { type: String, default: "" },
     mobile: { type: String, default: "" },
     photo: { type: String, default: "" },

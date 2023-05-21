@@ -52,17 +52,19 @@ export const createorder = async () => {
 
 export const Login = async (request: Request, response: Response) => {
   const value = request.body;
-  console.log("data from frontend +++>>>", value.mobile, value.password);
 
   const isuser = await User.find({ "personal.mobile": value.mobile });
+  console.log("isuser line number 57 ----->>>",isuser[0].userId)
   if (isuser.length > 0) {
     const paswword = isuser[0].personal?.password;
 
     if (paswword === value.password) {
-      const token = jwt.sign({ mobile: value.mobile }, "your-secret-key");
+      const token = jwt.sign({ mobile: value.mobile , userId:isuser[0].userId }, "your-secret-key");
 
       // Include the token in the response
-      return response.json({ success: true, token: token});
+      // const isuser = await User.find({ "personal.mobile": value.mobile });
+
+      return response.json({ success: true, token: token });
     }
 
     return response
@@ -76,10 +78,11 @@ export const Login = async (request: Request, response: Response) => {
   }
 };
 
+
 export const Register = async (request: Request, response: Response) => {
   const value = request.body;
-  const isuser = await User.find({ "personal.mobile": value.S_mobile});
-  console.log("signup value-- +++++++++++++++++++++++++++++++++++   --->>>", isuser.length);
+  console.log("value----------->>>>>>>>>> 84 ===>>",value)
+  const isuser = await User.find({ "personal.mobile": value.S_mobile });
   if (isuser.length > 0) {
     return response
       .status(401)
@@ -89,7 +92,7 @@ export const Register = async (request: Request, response: Response) => {
   await User.create({
     userId: userId,
     personal: {
-      name: value.Name,
+      name: value.name,
       mobile: value.S_mobile,
       password: value.S_password,
       dob: " ",
