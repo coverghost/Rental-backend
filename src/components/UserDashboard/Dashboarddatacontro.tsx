@@ -8,11 +8,15 @@ const GetUserInfo = async (request: Request, response: Response) => {
   const token = request.body.token;
   try {
     const decodedToken: any = jwt.verify(token, "your-secret-key");
+    const userid = decodedToken.userId;
     const mobile = decodedToken.mobile;
     const user = await User.findOne({ "personal.mobile": mobile });
+    const useracount  = await Useraccount.find(
+      { userId: userid } 
+    );
 
     if (user) {
-      return response.json({ success: true, user: user });
+      return response.json({ success: true, user: user, useracount:useracount });
     }
 
     return response.status(404).json({
@@ -49,12 +53,23 @@ const TransferByUpi = async (request: Request, response: Response) => {
   const Orderid = `BOA${Math.floor(Math.random() * 100000000000)}`;
 
   // console.log("line 43 transfer money----->>",{userid,upi,amount})
+  const myacount =   await Useraccount.find({userId:userid});
   const user = await Useraccount.find({ upi: recverupi });
   const reciveruser = await User.find({userId:user[0].userId})
   const usera = await Useraccount.find(
     { upi: recverupi } 
   );
-  console.log("user ---- line 51+++>>", usera);
+  console.log("user ---- line 51+++>>", myacount[0].totalamount);
+
+  if(myacount[0].totalamount<amount){
+    return response.status(401).json({
+      success: false,
+      message: "insuficiant balance",
+    });
+
+  }
+
+
 
   try {
     await Order.create({
@@ -74,9 +89,14 @@ const TransferByUpi = async (request: Request, response: Response) => {
       },
     });
     await Useraccount.updateOne(
+      { userId:userid },
+      { $set: { totalamount: (myacount[0].totalamount - Number(amount)) } }
+    );
+    await Useraccount.updateOne(
       { upi: recverupi },
       { $set: { totalamount: (user[0].totalamount + Number(amount)) } }
     );
+
     return response
       .status(200)
       .json({ success: true, message: "Money Send Succefully" });
