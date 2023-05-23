@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import router from './components/router';
 import { connectToDatabase, db } from './components/config/database';
-import { createorder, deletuser, getAllUsers } from './components/Auth.tsx/AuthCotroller';
+import { deletuser, } from './components/Auth.tsx/AuthCotroller';
 const PORT = 8092
 const application = express();
 application.use(express.json());

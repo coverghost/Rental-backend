@@ -10,5 +10,6 @@ router.post('/user-register',Register)
 
 router.post('/dashboard',Dashboarddata.GetUserInfo)
 router.get("/get-all-user",Dashboarddata.GetAllUser)
+router.post("/Transfer-By-Upi",Dashboarddata.TransferByUpi)
 
 export default router;
