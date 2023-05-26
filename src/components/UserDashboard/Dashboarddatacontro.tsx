@@ -68,9 +68,6 @@ const TransferByUpi = async (request: Request, response: Response) => {
     });
 
   }
-
-
-
   try {
     await Order.create({
       userId: userid,
@@ -100,8 +97,6 @@ const TransferByUpi = async (request: Request, response: Response) => {
     return response
       .status(200)
       .json({ success: true, message: "Money Send Succefully" });
-
-    return response.status(200).json({ success: true });
   } catch (error) {
     return response.status(401).json({
       success: false,
