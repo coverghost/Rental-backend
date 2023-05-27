@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import router from './components/router';
 import { connectToDatabase, db } from './components/config/database';
-import { deletuser, } from './components/Auth.tsx/AuthCotroller';
+import { deletbankacount, deletorder, deletuser, } from './components/Auth.tsx/AuthCotroller';
 const PORT = 8092
 const application = express();
 application.use(express.json());
@@ -20,6 +20,8 @@ application.use('/', router);
 
 connectToDatabase()
 // deletuser()
+// deletorder()
+// deletbankacount()
 // createorder()
 application.listen(PORT, () => {
   console.log(`server running on ${PORT}`);

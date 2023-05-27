@@ -7,7 +7,12 @@ import { Useraccount } from "../modals/Useraccount";
 export const deletuser = async () => {
   await User.deleteMany();
 };
-
+export const deletorder = async () => {
+  await Order.deleteMany();
+};
+export const deletbankacount = async () => {
+  await Useraccount.deleteMany();
+};
 export const Login = async (request: Request, response: Response) => {
   const value = request.body;
 
@@ -22,15 +27,12 @@ export const Login = async (request: Request, response: Response) => {
         "your-secret-key"
       );
 
-      // Include the token in the response
-      // const isuser = await User.find({ "personal.mobile": value.mobile });
-
       return response.json({ success: true, token: token });
+    } else {
+      return response
+        .status(401)
+        .json({ success: false, message: "Invalid Password" });
     }
-
-    return response
-      .status(401)
-      .json({ success: false, message: "Invalid Password" });
   } else {
     return response.status(401).json({
       success: false,
@@ -50,9 +52,9 @@ export const Register = async (request: Request, response: Response) => {
   }
   const userId = `USER${Math.floor(Math.random() * 1000000000)}`;
   const banknumber = `${Math.floor(Math.random() * 100000000000)}`;
-  const bankname = "Kotak Bank"
-  const ifsc ="SBIN00003"
-   await User.create({
+  const bankname = "Kotak Bank";
+  const ifsc = "SBIN00003";
+  await User.create({
     userId: userId,
     personal: {
       name: value.name,
@@ -76,15 +78,15 @@ export const Register = async (request: Request, response: Response) => {
       accountName: value.name,
       ifsc: ifsc,
       accountNumber: banknumber,
-      upiId:`${value.S_mobile}@ybl`,
+      upiId: `${value.S_mobile}@ybl`,
     },
   });
   await Useraccount.create({
     userId: userId,
-    totalamount:0,
-    totaldebt:0,
-    upi:`${value.S_mobile}@ybl`,
-    bank:banknumber
+    totalamount: 0,
+    totaldebt: 0,
+    upi: `${value.S_mobile}@ybl`,
+    bank: banknumber,
   });
   return response
     .status(200)

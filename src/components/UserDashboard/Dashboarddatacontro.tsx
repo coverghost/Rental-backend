@@ -14,9 +14,11 @@ const GetUserInfo = async (request: Request, response: Response) => {
     const useracount  = await Useraccount.find(
       { userId: userid } 
     );
-
+    const user_transaction = await Order.find({
+      userId: userid
+    })
     if (user) {
-      return response.json({ success: true, user: user, useracount:useracount });
+      return response.json({ success: true, user: user, useracount:useracount ,userTransaction:user_transaction });
     }
 
     return response.status(404).json({
@@ -48,20 +50,21 @@ const TransferByUpi = async (request: Request, response: Response) => {
   const data = request.body;
   const decodedToken: any = jwt.verify(data.token, "your-secret-key");
   const userid = decodedToken.userId;
-  const recverupi = data.value.upi;
-  const amount = data.value.amount;
+  const reciverUpi = data.value.upi
+  const reciverAmount = data.value.amount
   const Orderid = `BOA${Math.floor(Math.random() * 100000000000)}`;
-
-  // console.log("line 43 transfer money----->>",{userid,upi,amount})
   const myacount =   await Useraccount.find({userId:userid});
-  const user = await Useraccount.find({ upi: recverupi });
+  const user = await Useraccount.find({ upi:reciverUpi.trim() });
+  
+  if(user.length<1){
+    return response.status(401).json({
+      success: false,
+      message: "invalid Upi Id",
+    });
+  }
   const reciveruser = await User.find({userId:user[0].userId})
-  const usera = await Useraccount.find(
-    { upi: recverupi } 
-  );
-  console.log("user ---- line 51+++>>", myacount[0].totalamount);
 
-  if(myacount[0].totalamount<amount){
+  if(myacount[0].totalamount<reciverAmount){
     return response.status(401).json({
       success: false,
       message: "insuficiant balance",
@@ -72,7 +75,7 @@ const TransferByUpi = async (request: Request, response: Response) => {
     await Order.create({
       userId: userid,
       orderId: Orderid,
-      amount: amount,
+      amount: reciverAmount,
       self: false,
       transfrom: {
         upi: true,
@@ -87,11 +90,11 @@ const TransferByUpi = async (request: Request, response: Response) => {
     });
     await Useraccount.updateOne(
       { userId:userid },
-      { $set: { totalamount: (myacount[0].totalamount - Number(amount)) } }
+      { $set: { totalamount: (myacount[0].totalamount - Number(reciverAmount)) } }
     );
     await Useraccount.updateOne(
-      { upi: recverupi },
-      { $set: { totalamount: (user[0].totalamount + Number(amount)) } }
+      { upi: reciverUpi },
+      { $set: { totalamount: (user[0].totalamount + Number(reciverAmount)) } }
     );
 
     return response
