@@ -80,6 +80,7 @@ export const Register = async (request: Request, response: Response) => {
       accountNumber: banknumber,
       upiId: `${value.S_mobile}@ybl`,
     },
+    beneficiary:[]
   });
   await Useraccount.create({
     userId: userId,

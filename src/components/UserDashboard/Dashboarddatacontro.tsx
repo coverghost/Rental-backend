@@ -108,8 +108,30 @@ const TransferByUpi = async (request: Request, response: Response) => {
   }
 };
 
+const addbeneficary =async (request: Request, response: Response) => {
+  const data = request.body
+  const decodedToken: any = jwt.verify(data.token, "your-secret-key");
+  const userid = decodedToken.userId;
+  console.log("data from addbeneficary---->>> ",data.value)
+  const userIdtoadd:any = data?.value
+  const myuserdata = await User.findOne({userId:userid})
+  console.log( "myuserdata -- Before--->>>",myuserdata)
+  if (myuserdata && myuserdata.beneficiary) {
+    const aaryB=myuserdata.beneficiary
+    await User.updateOne(
+      {userId:userid},
+      { $push: { beneficiary: data.value } }
+    )
+  }
+  const myuserdataa = await User.findOne({userId:userid})
+  console.log( "myuserdata --After--->>>",myuserdataa)
+
+
+}
+
 export const Dashboarddata = {
   GetUserInfo,
   GetAllUser,
   TransferByUpi,
+  addbeneficary
 };

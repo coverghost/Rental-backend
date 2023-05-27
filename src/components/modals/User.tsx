@@ -28,6 +28,7 @@ interface IUser {
     accountNumber: string;
     upiId?: string;
   };
+  beneficiary:[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -59,6 +60,7 @@ const userSchema = new Schema<IUser>({
     accountNumber: { type: String, required: false, default: "" },
     upiId: { type: String, required: false, default: "" },
   },
+  beneficiary:[],
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 });
