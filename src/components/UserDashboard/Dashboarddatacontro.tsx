@@ -114,15 +114,16 @@ const addbeneficary = async (request: Request, response: Response) => {
   const data = request.body;
   const decodedToken: any = jwt.verify(data.token, "your-secret-key");
   const userid = decodedToken.userId;
+  console.log("data.value from frontend line 117+++>>",data.value)
   const myuserdata = await User.findOne({ userId: userid });
   if (myuserdata && myuserdata.beneficiary) {
     await User.updateOne(
       { userId: userid },
       { $push: { beneficiary: data.value } }
     );
-    return response.status(401).json({
+    return response.status(201).json({
       success: true,
-      message: "Technical error",
+      message: "benificer added succesfully",
     });
   } else {
     return response.status(401).json({
@@ -157,7 +158,7 @@ const listBeneficary = async (request: Request, response: Response) => {
 
 const delete_benificery = async (request: Request, response: Response) => {
   const data = request.body;
-  
+  // console.log("dataa from line 160+++>",data)
   const decodedToken: any = jwt.verify(data.token, "your-secret-key");
   const userid = decodedToken.userId;
   const benificery_delete = await User.find({ userId: userid });
