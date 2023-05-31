@@ -17,7 +17,6 @@ export const Login = async (request: Request, response: Response) => {
   const value = request.body;
 
   const isuser = await User.find({ "personal.mobile": value.mobile });
-  console.log("isuser line number 57 ----->>>", isuser[0].userId);
   if (isuser.length > 0) {
     const paswword = isuser[0].personal?.password;
 
